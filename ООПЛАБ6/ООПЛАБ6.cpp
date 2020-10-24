@@ -1,15 +1,14 @@
 ﻿#include <iostream>
 
-template< class T > class Tree;
+template< class T > class BinaryTree;
 
 template <class T>
 class TreeNode {
-	friend class Tree<T>;
+	friend class BinaryTree<T>;
 public:
 	TreeNode();
 	TreeNode(T);
 	~TreeNode();
-	T get_data() const;
 	
 private:
 	T data;
@@ -19,11 +18,11 @@ private:
 };
 
 template <class T>
-class Tree {
+class BinaryTree {
 	//friend class TreeNode<T>;
 public:
-	Tree();
-	~Tree();
+	BinaryTree();
+	~BinaryTree();
 	void insert(T);
 	void printTreeInfix();
 private:
@@ -33,12 +32,12 @@ private:
 //Class tree methods--------------------------------
 
 template <typename T>
-Tree<T>::Tree() {
+BinaryTree<T>::BinaryTree() {
 	root = NULL;
 }
 
 template <typename T>
-void Tree<T>::insert(T data) {
+void BinaryTree<T>::insert(T data) {
 	if (root == 0) {
 		root = new TreeNode<T>(data);
 		return;
@@ -67,11 +66,11 @@ void Tree<T>::insert(T data) {
 }
 
 template <typename T>
-Tree<T>::~Tree() {
+BinaryTree<T>::~BinaryTree() {
 }
 
 template <typename T>
-void Tree<T>::printTreeInfix() {
+void BinaryTree<T>::printTreeInfix() {
 	root->printInfix();
 }
 
@@ -95,11 +94,6 @@ TreeNode<T>::~TreeNode() {
 	delete right;
 }
 
-template<typename T>
-T TreeNode<T>::get_data() const {
-	return data;
-}
-
 template<class T>
 void TreeNode<T>::printInfix() {
 	if (this) {
@@ -114,7 +108,7 @@ void TreeNode<T>::printInfix() {
 
 int main()
 {
-	Tree <int> tree;
+	BinaryTree <int> tree;
 	tree.insert(6);
 	tree.insert(7);
 	tree.insert(5);
