@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include <vld>
+#include <vld.h>
 
 template< class T > class BinaryTree;
 
@@ -30,7 +30,7 @@ public:
 private:
 	TreeNode<T>* root;
 
-	void deleteTreeHelper(TreeNode<T>);
+	void deleteTreeHelper(TreeNode<T>*&);
 };
 
 //Class tree methods--------------------------------
@@ -71,6 +71,7 @@ void BinaryTree<T>::insert(T data) {
 
 template <typename T>
 BinaryTree<T>::~BinaryTree() {
+	this->deleteTree();
 }
 
 template <typename T>
@@ -84,10 +85,10 @@ void BinaryTree<T>::deleteTree() {
 }
 
 template<class T>
-void BinaryTree<T>::deleteTreeHelper(TreeNode<T> node) {
+void BinaryTree<T>::deleteTreeHelper(TreeNode<T>*& node) {
 	if (node) {
-		deleteTree(node->left);
-		deleteTree(node->right);
+		deleteTreeHelper(node->left);
+		deleteTreeHelper(node->right);
 		delete node;
 	}
 }
@@ -108,8 +109,6 @@ TreeNode<T>::TreeNode(const T new_data) {
 
 template <typename T>
 TreeNode<T>::~TreeNode() {
-	/*delete left;
-	delete right;*/
 }
 
 template<class T>
