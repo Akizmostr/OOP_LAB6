@@ -19,6 +19,21 @@ private:
 };
 
 template <class T>
+class TreeNode<T*> {
+	friend class BinaryTree<T>;
+public:
+	TreeNode<T*>();
+	TreeNode<T*>(const T&);
+	~TreeNode<T*>();
+
+private:
+	T* data;
+	TreeNode<T*>* left;
+	TreeNode<T*>* right;
+	void printInfix();
+};
+
+template <class T>
 class BinaryTree {
 	//friend class TreeNode<T>;
 public:
@@ -33,10 +48,29 @@ private:
 	void deleteTreeHelper(TreeNode<T>*&);
 };
 
+template <class T>
+class BinaryTree<T*> {
+	//friend class TreeNode<T>;
+public:
+	BinaryTree();
+	~BinaryTree();
+	void insert(T&);
+	void printTreeInfix();
+	void deleteTree();
+private:
+	TreeNode<T*>* root;
+
+	void deleteTreeHelper(TreeNode<T>*&);
+};
+
 //Class tree methods--------------------------------
 
 template <typename T>
 BinaryTree<T>::BinaryTree() {
+	root = NULL;
+}
+template <class T>
+BinaryTree<T*>::BinaryTree() {
 	root = NULL;
 }
 
@@ -61,6 +95,35 @@ void BinaryTree<T>::insert(T& data) {
 		}
 	}
 	temp = new TreeNode<T> (data);
+	if (left) {
+		prev->left = temp;
+	}
+	else {
+		prev->right = temp;
+	}
+}
+
+template <typename T>
+void BinaryTree<T*>::insert(T& data) {
+	if (root == 0) {
+		root = new TreeNode<T*>(data);
+		return;
+	}
+	TreeNode<T*>* prev = NULL;
+	TreeNode<T*>* temp = root;
+	bool left = 0;
+	while (temp) {
+		prev = temp;
+		if (data < temp->data) {
+			temp = temp->left;
+			left = 1;
+		}
+		else {
+			temp = temp->right;
+			left = 0;
+		}
+	}
+	temp = new TreeNode<T*>(data);
 	if (left) {
 		prev->left = temp;
 	}
@@ -107,8 +170,18 @@ TreeNode<T>::TreeNode(const T& new_data) {
 	right = NULL;
 }
 
+template<class T>
+TreeNode<T*>::TreeNode(const T& new_data) {
+	data = new T(*new_data);
+}
+
 template <typename T>
 TreeNode<T>::~TreeNode() {
+}
+
+template <class T>
+TreeNode<T*>::~TreeNode<T*>() {
+	delete data;
 }
 
 template<class T>
@@ -120,16 +193,50 @@ void TreeNode<T>::printInfix() {
 	}
 }
 
+template<class T>
+void TreeNode<T*>::printInfix() {
+	if (this) {
+		this->left->printInfix();
+		std::cout << this->*(data) << "\t";
+		this->right->printInfix();
+	}
+}
+
 int main()
 {
-	BinaryTree <int> tree;
-	int k = 8;
-	int d = 10;
-	tree.insert(k);
-	tree.insert(d);
-	/*tree.insert(5);
-	tree.insert(0);
-	tree.insert(9);
-	tree.insert(55);*/
-	tree.printTreeInfix();
+	BinaryTree <char> char_tree;
+	BinaryTree <double> double_tree;
+	BinaryTree <std::string> string_tree;
+	BinaryTree <int*> intptr_tree;
+	char arr[7] = {'d', 'f', 'e', 'a', '^', 'W', 'q'};
+	double arr2[7] = { 2.5, 6, 0.6, 1, 9, 7 };
+	std::string arr3[3] = { "Hello world1", "Hello world3", "Hello world2" };
+	for (auto var : arr) {
+		char_tree.insert(var);
+	}
+	for (auto var : arr2) {
+		double_tree.insert(var);
+	}
+	for (auto var : arr3) {
+		string_tree.insert(var);
+	}
+
+	int* xptr = new int[1];
+	int* yptr = new int[1];
+	xptr[0] = 0;
+	yptr[0] = -4;
+	intptr_tree.insert(xptr);
+	intptr_tree.insert(yptr);
+
+	BinaryTree <int> intptr_tree;
+	intptr_tree.insert(xptr);
+	intptr_tree.insert(yptr);
+	char_tree.printTreeInfix();
+	std::cout << std::endl;
+	double_tree.printTreeInfix();
+	std::cout << std::endl;
+	string_tree.printTreeInfix();
+	std::cout << std::endl;
+	intptr_tree.printTreeInfix();
+	std::cout << xptr << "\t" << yptr << std::endl;
 }
