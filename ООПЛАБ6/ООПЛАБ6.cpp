@@ -8,7 +8,7 @@ class TreeNode {
 	friend class BinaryTree<T>;
 public:
 	TreeNode();
-	TreeNode(T);
+	TreeNode(const T&);
 	~TreeNode();
 	
 private:
@@ -24,7 +24,7 @@ class BinaryTree {
 public:
 	BinaryTree();
 	~BinaryTree();
-	void insert(T);
+	void insert(T&);
 	void printTreeInfix(); 
 	void deleteTree();
 private:
@@ -41,7 +41,7 @@ BinaryTree<T>::BinaryTree() {
 }
 
 template <typename T>
-void BinaryTree<T>::insert(T data) {
+void BinaryTree<T>::insert(T& data) {
 	if (root == 0) {
 		root = new TreeNode<T>(data);
 		return;
@@ -101,7 +101,7 @@ TreeNode<T>::TreeNode() {
 }
 
 template <typename T>
-TreeNode<T>::TreeNode(const T new_data) {
+TreeNode<T>::TreeNode(const T& new_data) {
 	data = new_data;
 	left = NULL;
 	right = NULL;
@@ -123,11 +123,13 @@ void TreeNode<T>::printInfix() {
 int main()
 {
 	BinaryTree <int> tree;
-	tree.insert(6);
-	tree.insert(7);
-	tree.insert(5);
+	int k = 8;
+	int d = 10;
+	tree.insert(k);
+	tree.insert(d);
+	/*tree.insert(5);
 	tree.insert(0);
 	tree.insert(9);
-	tree.insert(55);
+	tree.insert(55);*/
 	tree.printTreeInfix();
 }
