@@ -7,7 +7,6 @@ template <class T>
 class TreeNode {
 	friend class BinaryTree<T>;
 public:
-	TreeNode();
 	TreeNode(const T&);
 	~TreeNode();
 	
@@ -20,10 +19,9 @@ private:
 
 template <class T>
 class TreeNode<T*> {
-	friend class BinaryTree<T>;
+	friend class BinaryTree<T*>;
 public:
-	TreeNode<T*>();
-	TreeNode<T*>(const T&);
+	TreeNode<T*>(T*&);
 	~TreeNode<T*>();
 
 private:
@@ -52,25 +50,20 @@ template <class T>
 class BinaryTree<T*> {
 	//friend class TreeNode<T>;
 public:
-	BinaryTree();
 	~BinaryTree();
-	void insert(T&);
+	void insert(T*&);
 	void printTreeInfix();
 	void deleteTree();
 private:
 	TreeNode<T*>* root;
 
-	void deleteTreeHelper(TreeNode<T>*&);
+	void deleteTreeHelper(TreeNode<T*>*&);
 };
 
 //Class tree methods--------------------------------
 
 template <typename T>
 BinaryTree<T>::BinaryTree() {
-	root = NULL;
-}
-template <class T>
-BinaryTree<T*>::BinaryTree() {
 	root = NULL;
 }
 
@@ -104,7 +97,7 @@ void BinaryTree<T>::insert(T& data) {
 }
 
 template <typename T>
-void BinaryTree<T*>::insert(T& data) {
+void BinaryTree<T*>::insert(T*& data) {
 	if (root == 0) {
 		root = new TreeNode<T*>(data);
 		return;
@@ -114,7 +107,7 @@ void BinaryTree<T*>::insert(T& data) {
 	bool left = 0;
 	while (temp) {
 		prev = temp;
-		if (data < temp->data) {
+		if (*data < *(temp->data)) {
 			temp = temp->left;
 			left = 1;
 		}
@@ -138,12 +131,27 @@ BinaryTree<T>::~BinaryTree() {
 }
 
 template <typename T>
+BinaryTree<T*>::~BinaryTree() {
+	this->deleteTree();
+}
+
+template <typename T>
 void BinaryTree<T>::printTreeInfix() {
+	root->printInfix();
+}
+
+template <typename T>
+void BinaryTree<T*>::printTreeInfix() {
 	root->printInfix();
 }
 
 template<class T>
 void BinaryTree<T>::deleteTree() {
+	deleteTreeHelper(root);
+}
+
+template<class T>
+void BinaryTree<T*>::deleteTree() {
 	deleteTreeHelper(root);
 }
 
@@ -156,14 +164,18 @@ void BinaryTree<T>::deleteTreeHelper(TreeNode<T>*& node) {
 	}
 }
 
-//Class TreeNode methods --------------------------------------------
-template <typename T>
-TreeNode<T>::TreeNode() {
-	left = NULL;
-	right = NULL;
+template<class T>
+void BinaryTree<T*>::deleteTreeHelper(TreeNode<T*>*& node) {
+	if (node) {
+		deleteTreeHelper(node->left);
+		deleteTreeHelper(node->right);
+		delete node;
+	}
 }
 
-template <typename T>
+//Class TreeNode methods --------------------------------------------
+
+template <class T>
 TreeNode<T>::TreeNode(const T& new_data) {
 	data = new_data;
 	left = NULL;
@@ -171,8 +183,10 @@ TreeNode<T>::TreeNode(const T& new_data) {
 }
 
 template<class T>
-TreeNode<T*>::TreeNode(const T& new_data) {
+TreeNode<T*>::TreeNode(T*& new_data) {
 	data = new T(*new_data);
+	left = NULL;
+	right = NULL;
 }
 
 template <typename T>
@@ -197,7 +211,7 @@ template<class T>
 void TreeNode<T*>::printInfix() {
 	if (this) {
 		this->left->printInfix();
-		std::cout << this->*(data) << "\t";
+		std::cout << *(this->data) << "\t";
 		this->right->printInfix();
 	}
 }
@@ -221,22 +235,27 @@ int main()
 		string_tree.insert(var);
 	}
 
-	int* xptr = new int[1];
-	int* yptr = new int[1];
-	xptr[0] = 0;
-	yptr[0] = -4;
+	int* xptr = new int{0};
+	int* yptr = new int{-4};
 	intptr_tree.insert(xptr);
 	intptr_tree.insert(yptr);
 
-	BinaryTree <int> intptr_tree;
-	intptr_tree.insert(xptr);
-	intptr_tree.insert(yptr);
+
 	char_tree.printTreeInfix();
 	std::cout << std::endl;
 	double_tree.printTreeInfix();
 	std::cout << std::endl;
 	string_tree.printTreeInfix();
 	std::cout << std::endl;
+	*xptr = -10;
 	intptr_tree.printTreeInfix();
-	std::cout << xptr << "\t" << yptr << std::endl;
+	std::cout << *xptr << "\t" << *yptr << std::endl;
+	delete xptr;
+	delete yptr;
+
+	char* str = new char[6]{"Hello"};
+	BinaryTree<char*> charptr_tree;
+	charptr_tree.insert(str);
+	charptr_tree.printTreeInfix();
+	delete str;
 }
