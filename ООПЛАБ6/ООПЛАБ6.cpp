@@ -48,7 +48,6 @@ private:
 
 template <class T>
 class BinaryTree<T*> {
-	//friend class TreeNode<T>;
 public:
 	~BinaryTree();
 	void insert(T*&);
